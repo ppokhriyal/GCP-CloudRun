@@ -39,6 +39,7 @@ pipeline {
 		stage("Push Docker image to GCP Artifcat Registry"){
 			steps{
 				sh '''
+					echo Y | gcloud auth configure-docker us-central1-docker.pkg.dev
 					docker push us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/flask-app/webapp:v1
 				 '''
 			}
