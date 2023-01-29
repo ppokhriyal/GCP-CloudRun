@@ -32,7 +32,7 @@ pipeline {
 		stage("Create Docker image") {
 			steps {
 				sh ''' 
-					docker build -t gcr.io/"$GCP_PROJECT_ID"/webapp:v1 .
+					sudo docker build -t us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/flask-app/webapp:v1 .
 				'''
 			}
 		}
