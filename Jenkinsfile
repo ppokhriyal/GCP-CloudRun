@@ -1,5 +1,9 @@
 pipeline {
 	agent any
+	environment {
+		GCP_PROJECT_ID = "jenkins-lab-376212"
+		GCP_SERVICE_ACCOUNT_EMAIL = "jenkins-gcloud@jenkins-lab-376212.iam.gserviceaccount.com"
+	}
 	stages {
 		stage("GCLOUD Version check"){	
 			steps {
@@ -7,6 +11,26 @@ pipeline {
 					gcloud version
 				 '''
 			}
+		stage("Set GCP Project"){
+			steps {
+				withCredentials([file(credentialsId: 'gcloud-creds', variable: 'GCLOUD_SECRET')]) {
+					sh '''
+						gcloud auth activate-service-account --key-file="$GCLOUD_SECRET"
+						gcloud config set project "$GCP_PROJECT_ID"
+					'''
+					
+				}
+			}
+		}
+		stage("Crate Artifact Registry") {
+			steps{
+				sh '''
+					gcloud artifacts repositories create flask-app --labels=v=1 --location us-central1 --repository-format=docker
+				 '''
+
+			}
+
+		}
 		}
 	}
 }
