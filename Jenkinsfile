@@ -22,11 +22,18 @@ pipeline {
 				}
 			}
 		}
-		stage("Crate Artifact Registry") {
+		stage("Create Artifact Registry") {
 			steps {
 				sh '''
 					gcloud artifacts repositories create flask-app --labels=v=1 --location us-central1 --repository-format=docker
 				 '''
+			}
+		}
+		stage("Create Docker image") {
+			steps {
+				sh ''' 
+					docker build -t gcr.io/"$GCP_PROJECT_ID"/webapp:v1 .
+				'''
 			}
 		}
 	}
