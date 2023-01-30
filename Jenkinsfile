@@ -26,14 +26,14 @@ pipeline {
 		stage("Create Artifact Registry") {
 			steps {
 				sh '''
-					gcloud artifacts repositories create "$GCP_ARTIFACT" --location us-central1 --repository-format=docker
+					gcloud artifacts repositories create "$GCP_ARTIFACT_REG" --location us-central1 --repository-format=docker
 				 '''
 			}
 		}
 		stage("Create Docker image") {
 			steps {
 				sh ''' 
-					docker build -t us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/"$GCP_ARTIFACT"/webapp:v1 .
+					docker build -t us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/"$GCP_ARTIFACT_REG"/webapp:v1 .
 				'''
 			}
 		}
@@ -41,14 +41,14 @@ pipeline {
 			steps{
 				sh '''
 					echo Y | gcloud auth configure-docker us-central1-docker.pkg.dev
-					docker push us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/"$GCP_ARTIFACT"/webapp:v1
+					docker push us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/"$GCP_ARTIFACT_REG"/webapp:v1
 				 '''
 			}
 		}
 		stage("Deploy Cloud Run Container"){
 			steps{
 				sh '''
-					gcloud run deploy mywebapp --max-instances=1 --min-instances=5 --allow-unauthenticated --image us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/"$GCP_ARTIFACT"/webapp:v1
+					gcloud run deploy mywebapp --max-instances=1 --min-instances=5 --allow-unauthenticated --image us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/"$GCP_ARTIFACT_REG"/webapp:v1
 				 '''
 			}
 		}
