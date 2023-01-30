@@ -48,7 +48,7 @@ pipeline {
 		stage("Deploy Cloud Run Container"){
 			steps{
 				sh '''
-					gcloud run deploy mywebapp --max-instances=1 --min-instances=5 --region=us-central1 --allow-unauthenticated --image us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/"$GCP_ARTIFACT_REG"/webapp:v1
+					gcloud run deploy mywebapp --max-instances=5 --min-instances=1 --region=us-central1 --allow-unauthenticated --image us-central1-docker.pkg.dev/"$GCP_PROJECT_ID"/"$GCP_ARTIFACT_REG"/webapp:v1
 				 '''
 			}
 		}
